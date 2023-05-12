@@ -60,9 +60,21 @@ export default {
       // before using json-server
       // this.tasks = [...this.tasks, newTask];
     },
-    deleteTask(id) {
+    async deleteTask(id) {
       if (confirm("Are you sure? ")) {
-        this.tasks = this.tasks.filter((task) => task.id !== id);
+        const res = await fetch(`http://localhost:3000/tasks/${id}`, {
+          method: "DELETE",
+        })
+        // with this, the data returned is an empty object
+        // .then(res => res.json())
+        // .then(data => console.log(data))
+
+        res.status === 200
+          ? (this.tasks = this.tasks.filter((task) => task.id !== id))
+          : alert("Error in deleting");
+
+        // before using json server  
+        // this.tasks = this.tasks.filter((task) => task.id !== id);
       }
     },
     toggleReminder(id) {
