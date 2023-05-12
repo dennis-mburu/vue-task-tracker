@@ -6,14 +6,17 @@ export default {
   methods: {
     onDelete(id) {
       // this.$emit("deleteTask", id);
-      this.$emit("delete-task", id)
+      this.$emit("delete-task", id);
     },
   },
 };
 </script>
 
 <template>
-  <div :class="[task.reminder ? 'reminder' : '', 'task']">
+  <div
+    @dblclick="$emit('toggle-reminder', task.id)"
+    :class="[task.reminder ? 'reminder' : '', 'task']"
+  >
     <h3>
       {{ task.text }}
       <i @click="onDelete(task.id)" class="fas fa-times"></i>
