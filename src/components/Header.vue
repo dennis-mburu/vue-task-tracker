@@ -2,6 +2,7 @@
   <header>
     <h1>{{ title }}</h1>
     <Button
+      v-show="homePage"
       @on-click="onClick"
       :text="showAddTask ? 'close' : 'Add Task'"
       :color="showAddTask ? 'red' : 'green'"
@@ -24,6 +25,15 @@ export default {
   methods: {
     onClick() {
       this.$emit("on-click");
+    },
+  },
+  computed: {
+    homePage() {
+      if (this.$route.path === "/") {
+        return true;
+      } else {
+        return false;
+      }
     },
   },
 };
