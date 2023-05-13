@@ -64,25 +64,65 @@ export default {
       if (confirm("Are you sure? ")) {
         const res = await fetch(`http://localhost:3000/tasks/${id}`, {
           method: "DELETE",
-        })
+        });
         // with this, the data returned is an empty object
         // .then(res => res.json())
         // .then(data => console.log(data))
 
+        // the alert won't be shown if the server is closed, as the first fetch wont go through
         res.status === 200
           ? (this.tasks = this.tasks.filter((task) => task.id !== id))
           : alert("Error in deleting");
 
-        // before using json server  
+        // before using json server
         // this.tasks = this.tasks.filter((task) => task.id !== id);
       }
     },
-    toggleReminder(id) {
-      console.log("task", id);
+    async toggleReminder(id) {
+      const taskToToggle = await this.fetchTask(id);
+      const updatedTask = { ...taskToToggle, reminder: !taskToToggle.reminder };
+
+      const res = await fetch(`http://localhost:3000/tasks/${id}`, {
+        method: "PATCH",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(updatedTask),
+      });
+
+      const data = await res.json();
+
       this.tasks = this.tasks.map((task) =>
-        task.id === id ? { ...task, reminder: !task.reminder } : task
+        task.id === id ? { ...task, reminder: data.reminder } : task
       );
+
+      // before json-server
+      // this.tasks = this.tasks.map((task) =>
+      //   task.id === id ? { ...task, reminder: !task.reminder } : task
+      // );
     },
+
+    // This method can also work to toggle reminders
+    // toggleReminder(id) {
+    //   let taskToToggle = this.tasks.find((task) => task.id === id);
+    //   fetch(`http://localhost:3000/tasks/${id}`, {
+    //     method: "PATCH",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       ...taskToToggle,
+    //       reminder: !taskToToggle.reminder,
+    //     }),
+    //   })
+    //     .then((res) => res.json())
+    //     .then(
+    //       (data) =>
+    //         (this.tasks = this.tasks.map((task) =>
+    //           task.id === data.id ? (task = data) : task
+    //         ))
+    //     );
+    // },
 
     // Using json-server
     async fetchData() {
